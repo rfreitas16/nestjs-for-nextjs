@@ -1,0 +1,6 @@
+@baseurl = http://localhost:3000
+
+GET {{baseurl}}
+
+###
+POST {{baseurl}}/auth/login
