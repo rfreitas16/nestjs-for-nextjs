@@ -34,4 +34,10 @@ export class UserService {
     // fazer o hash de senha
     // salvar na base de dados
   }
+  findByEmail(email: string) {
+    return this.userRepository.findOneBy({ email });
+  }
+  save(user: User) {
+    return this.userRepository.save(user);
+  }
 }
