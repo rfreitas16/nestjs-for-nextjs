@@ -3,16 +3,18 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { CustomParseIntPipe } from 'src/common/pipes/custom-parse-int-pipe.pipe';
-import { CreateUserDto } from './dto/create-user-dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import * as authenticatedRequest from 'src/auth/types/authenticated-request';
+import { UpdateUserDto } from './dto/update-user.dto';
+import type { AuthenticatedRequest } from 'src/auth/types/authenticated-request';
 
 @Controller('user')
 export class UserController {
@@ -24,14 +26,20 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(
-    @Req() req: authenticatedRequest.AuthenticatedRequest,
+    @Req() req: AuthenticatedRequest,
     @Param('id', CustomParseIntPipe) id: number,
   ) {
+    console.log(req.user.id);
     console.log(req.user.email);
-    return `ola do user${id}`;
+    return `olá do controller do user #${id}`;
   }
   @Post()
   create(@Body() dto: CreateUserDto) {
     return this.userService.create(dto);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Patch('me')
+  update(@Req() req: AuthenticatedRequest, @Body() dto: UpdateUserDto) {
+    return this.userService.update(req.user.id, dto);
   }
 }
