@@ -23,7 +23,7 @@ import { JwtStrategy } from './jwt.strategy';
         return {
           secret,
           signOptions: { expiresIn: '5m' },
-          // #TODO
+          // #TODO tempo de expiracao nao funciona com .env
           // signOptions:{ expiresIn: process.env.JWTEXPIRATION ||'5m' }
         };
       },
