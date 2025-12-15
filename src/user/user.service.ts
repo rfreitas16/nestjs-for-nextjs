@@ -3,6 +3,7 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,6 +11,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { HashingService } from 'src/common/hashing/hashing.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Injectable()
 export class UserService {
@@ -73,6 +75,22 @@ export class UserService {
       user.email = dto.email;
       user.forceLogout = true;
     }
+
+    return this.save(user);
+  }
+
+  async updatePassword(id: string, dto: UpdatePasswordDto) {
+    const user = await this.findOneByOrFail({ id });
+
+    const isCurrentPasswordValid = await this.hashingService.compare(
+      dto.currentPassword,
+      user.password,
+    );
+    if (!isCurrentPasswordValid) {
+      throw new UnauthorizedException('Senha atual invalida');
+    }
+    user.password = await this.hashingService.hash(dto.newPassword);
+    user.forceLogout = true;
 
     return this.save(user);
   }
