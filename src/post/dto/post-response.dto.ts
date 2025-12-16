@@ -10,16 +10,26 @@ export class PostResponseDto {
   readonly published: boolean;
   readonly createdAt: Date;
   readonly updatedAt: Date;
+  readonly author: {
+    id: string;
+    name: string;
+    email: string;
+  };
 
   constructor(post: Post) {
     this.id = post.id;
     this.title = post.title;
     this.slug = post.slug;
-    this.content = post.context;
+    this.content = post.content;
     this.excerpt = post.excerpt;
     this.coverImageUrl = post.coverImageUrl;
-    this.published = post.publiched;
+    this.published = post.published;
     this.createdAt = post.createdAt;
     this.updatedAt = post.updatedAt;
+    this.author = {
+      id: post.author.id,
+      name: post.author.name,
+      email: post.author.email,
+    };
   }
 }

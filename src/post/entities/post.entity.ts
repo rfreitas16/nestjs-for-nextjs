@@ -1,14 +1,16 @@
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
 export class Post {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -17,8 +19,8 @@ export class Post {
   @Column({ unique: true })
   slug: string;
 
-  @Column()
-  context: string;
+  @Column('text')
+  content: string;
 
   @Column()
   excerpt: string;
@@ -27,10 +29,15 @@ export class Post {
   coverImageUrl: string;
 
   @Column({ default: false })
-  publiched: boolean;
+  published: boolean;
 
   @CreateDateColumn()
   createdAt: Date;
+
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Many to One <- authorId <- FK para User
+  @ManyToOne(() => User)
+  author: User;
 }
